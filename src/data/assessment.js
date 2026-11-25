@@ -1,0 +1,73 @@
+// topic ids match data/modules.js (basics, fundamental, technical, risk, portfolio)
+export const questions = [
+  {
+    id: 'q1', topic: 'foundations', difficulty: 'easy',
+    question: 'What does owning a share of a company give you?',
+    options: ['A loan to the company that pays fixed interest', 'A small ownership stake in the company', 'A guaranteed yearly dividend', 'The right to manage daily operations'],
+    answer: 1,
+    explanation: 'A share is a unit of ownership. Dividends are not guaranteed, and small shareholders do not run the company.',
+  },
+  {
+    id: 'q2', topic: 'foundations', difficulty: 'medium',
+    question: 'What is a limit order?',
+    options: ['An order that executes immediately at any price', 'An order to buy or sell only at a set price or better', 'An order that is cancelled at market close no matter what', 'An order placed automatically by your broker'],
+    answer: 1,
+    explanation: 'A limit order sets the price you will accept. It may not fill if the market never reaches that price.',
+  },
+  {
+    id: 'q3', topic: 'fundamental', difficulty: 'easy',
+    question: 'A stock has a P/E ratio of 25. What does that mean?',
+    options: ['Investors pay ₹25 for every ₹1 of its yearly earnings', 'The company grew 25% this year', 'The company pays a 25% dividend', 'The share price fell 25%'],
+    answer: 0,
+    explanation: 'P/E is price divided by earnings per share. Higher P/E usually means investors expect more growth, or the stock is expensive.',
+  },
+  {
+    id: 'q4', topic: 'fundamental', difficulty: 'medium',
+    question: "Which statement shows a company's revenue and profit over a period?",
+    options: ['Balance sheet', 'Income statement (profit and loss)', 'Shareholder register', 'Audit certificate'],
+    answer: 1,
+    explanation: 'The income statement covers revenue, expenses and profit. The balance sheet is a snapshot of assets and liabilities.',
+  },
+  {
+    id: 'q5', topic: 'technical', difficulty: 'easy',
+    question: 'On a candlestick chart, what do the thin lines above and below the body (wicks) show?',
+    options: ['The highest and lowest prices in that period', 'The trading volume', 'The opening and closing gap', 'The moving average'],
+    answer: 0,
+    explanation: 'The body spans open to close. The wicks extend to the period’s high and low.',
+  },
+  {
+    id: 'q6', topic: 'technical', difficulty: 'medium',
+    question: 'An RSI reading above 70 is commonly read as...',
+    options: ['Overbought: the price may be stretched', 'Oversold: a bounce is guaranteed', 'The company is highly profitable', 'A confirmed trend reversal'],
+    answer: 0,
+    explanation: 'RSI above 70 suggests strong recent buying, so the price may be stretched. It is a signal to watch, not a guarantee of reversal.',
+  },
+  {
+    id: 'q7', topic: 'portfolio', difficulty: 'hard',
+    question: 'Capital ₹10,00,000, risk 1% per trade, entry ₹500, stop-loss ₹480. What is the maximum position size?',
+    options: ['200 shares', '500 shares', '2,000 shares', '5,000 shares'],
+    answer: 1,
+    explanation: 'Max loss is ₹10,000. Loss per share is ₹500 − ₹480 = ₹20. So 10,000 ÷ 20 = 500 shares.',
+  },
+  {
+    id: 'q8', topic: 'portfolio', difficulty: 'medium',
+    question: 'Entry ₹100, stop-loss ₹95, target ₹115. What is the risk-reward ratio?',
+    options: ['Reward is 3× the risk', 'Reward is 1.5× the risk', 'Risk is 3× the reward', 'Reward equals the risk'],
+    answer: 0,
+    explanation: 'Risk is ₹5 per share and potential reward is ₹15 per share, so the reward is 3× the risk.',
+  },
+  {
+    id: 'q9', topic: 'portfolio', difficulty: 'easy',
+    question: 'Which portfolio is best diversified?',
+    options: ['100% in one large bank stock', 'Five stocks, all in the IT sector', 'Stocks spread across several sectors', 'All money in last month’s best performer'],
+    answer: 2,
+    explanation: 'Diversification means spreading risk across different sectors, so one bad event does not hurt everything.',
+  },
+  {
+    id: 'q10', topic: 'portfolio', difficulty: 'medium',
+    question: 'What does maximum drawdown measure?',
+    options: ['The biggest single-day gain', 'The largest fall from a portfolio’s peak to its lowest point', 'The total fees paid', 'The average yearly return'],
+    answer: 1,
+    explanation: 'Maximum drawdown is the worst peak-to-trough decline. It shows how painful the worst stretch was.',
+  },
+]

@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+
+/* ---------- Scoped light theme: only applies inside .lp ---------- */
+.lp {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: #f3f6fb;
+  color: #0b1b2e;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+.lp-serif { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+.lp ::selection { background: #a7f3d0; color: #064e3b; }
+.lp :focus-visible { outline: 2px solid #10b981; outline-offset: 3px; }
+
+/* ---------- Aurora background ---------- */
+.aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.aurora i {
+  position: absolute; border-radius: 9999px; filter: blur(90px); opacity: .55;
+  animation: lp-drift 22s ease-in-out infinite alternate;
+}
+.aurora i:nth-child(1) { width: 520px; height: 520px; background: #6ee7b7; top: -12%; left: -6%; }
+.aurora i:nth-child(2) { width: 560px; height: 560px; background: #7dd3fc; top: 2%; right: -10%; animation-delay: -6s; animation-duration: 26s; }
+.aurora i:nth-child(3) { width: 500px; height: 500px; background: #c4b5fd; bottom: 8%; left: 22%; animation-delay: -12s; opacity: .45; }
+.aurora i:nth-child(4) { width: 440px; height: 440px; background: #fdba74; bottom: -12%; right: 12%; animation-delay: -3s; opacity: .35; animation-duration: 30s; }
+@keyframes lp-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(60px, 40px, 0) scale(1.12); }
+  100% { transform: translate3d(-40px, 70px, 0) scale(.95); }
+}
+
+/* ---------- Glass ---------- */
+.glass {
+  background: rgba(255, 255, 255, .55);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  backdrop-filter: blur(22px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, .75);
+  box-shadow: 0 10px 40px -12px rgba(30, 64, 110, .18), inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+.glass-strong {
+  background: rgba(255, 255, 255, .72);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 24px 60px -18px rgba(30, 64, 110, .28), inset 0 1px 0 #fff;
+}
+
+/* ---------- Glowing animated border ---------- */
+@property --lp-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+.glow-border { position: relative; }
+.glow-border::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--lp-angle), transparent 0 55%, #34d399 70%, #38bdf8 82%, #a78bfa 92%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: lp-spin 7s linear infinite;
+}
+@keyframes lp-spin { to { --lp-angle: 360deg; } }
+
+/* Glow border that only lights up on hover (for small cards) */
+.glow-hover::before { opacity: 0; transition: opacity .4s ease; }
+.glow-hover:hover::before { opacity: 1; }
+
+/* ---------- Tilt card cursor spotlight ---------- */
+.tilt { position: relative; transform-style: preserve-3d; will-change: transform; }
+.tilt::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, .85), transparent 45%);
+  transition: opacity .3s ease;
+}
+.tilt:hover::after { opacity: .9; }
+
+/* ---------- Button shine ---------- */
+.shine {
+  position: absolute; inset: 0; pointer-events: none; transform: translateX(-120%);
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
+}
+.group:hover .shine { transform: translateX(120%); transition: transform .8s ease; }
+
+/* ---------- Nav link underline ---------- */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, #10b981, #38bdf8); transform: scaleX(0); transform-origin: left; transition: transform .3s ease;
+}
+.nav-link:hover::after { transform: scaleX(1); }
+
+/* ---------- Ticker ---------- */
+.lp-marquee { display: flex; width: max-content; animation: lp-scroll 40s linear infinite; }
+.lp-marquee:hover { animation-play-state: paused; }
+@keyframes lp-scroll { to { transform: translateX(-50%); } }
+
+/* ---------- Gradient text ---------- */
+.grad-text {
+  background: linear-gradient(100deg, #059669 0%, #0ea5a4 45%, #3b82f6 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora i, .glow-border::before, .lp-marquee { animation: none !important; }
+}

@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=2.0
+psycopg2-binary
+cryptography
+pyjwt
+bcrypt
+pydantic-settings
+pandas
+numpy
+yfinance
+feedparser
+transformers
+torch
+scikit-learn
+datasets

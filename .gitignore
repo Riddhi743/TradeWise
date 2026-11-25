@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.vscode/
+backend/venv/
+backend/.env
+.env
+backend/app/ml/finbert-tradewise/
+__pycache__/
+*.pyc
+folder_structure.txt
+mysqltradewise.sql
