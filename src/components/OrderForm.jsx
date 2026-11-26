@@ -4,11 +4,25 @@ import { Button, Field } from '@/components/ui'
 import { positionSize, riskReward } from '@/utils/risk'
 import { inr } from '@/utils/format'
 
+function UnitToggle({ unit, onChange }) {
+  return (
+    <div role="group" aria-label="Stop-loss and take-profit unit" className="inline-flex rounded-lg border border-line overflow-hidden text-xs">
+      {[['pct', '%'], ['inr', '₹']].map(([u, t]) => (
+        <button key={u} type="button" aria-pressed={unit === u} onClick={() => onChange(u)}
+          className={`px-3 min-h-8 cursor-pointer transition-colors ${unit === u ? 'bg-brand text-bg font-semibold' : 'text-muted hover:bg-surface-2'}`}>
+          {t}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export default function OrderForm({ stock, cash, totalValue, holding, onSubmit }) {
   const [side, setSide] = useState('BUY')
   const [qty, setQty] = useState('')
   const [stop, setStop] = useState('')
   const [target, setTarget] = useState('')
+  const [unit, setUnit] = useState('pct')
   const [riskPct, setRiskPct] = useState(1)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -16,8 +30,15 @@ export default function OrderForm({ stock, cash, totalValue, holding, onSubmit }
   const { symbol, name, sector, price } = stock
   const buy = side === 'BUY'
   const q = Math.floor(Number(qty)) || 0
-  const sl = Number(stop) || 0
-  const tp = Number(target) || 0
+
+  const toPrice = (raw, dir) => {
+    const n = Number(raw) || 0
+    if (!n) return 0
+    return unit === 'pct' ? Math.round(price * (1 + (dir * n) / 100) * 100) / 100 : n
+  }
+  const sl = toPrice(stop, -1)
+  const tp = toPrice(target, 1)
+
   const value = q * price
   const slValid = sl > 0 && sl < price
   const maxRisk = (totalValue * riskPct) / 100
@@ -25,6 +46,12 @@ export default function OrderForm({ stock, cash, totalValue, holding, onSubmit }
   const rr = slValid && tp > price ? riskReward(price, sl, tp) : 0
   const lossIfStopped = slValid ? q * (price - sl) : 0
   const exposure = totalValue ? ((value + (holding?.value ?? 0)) / totalValue) * 100 : 0
+  const stopHint = unit === 'pct'
+    ? (sl > 0 ? `= ${inr(sl)}` : undefined)
+    : (slValid ? `${((1 - sl / price) * 100).toFixed(1)}% below price` : undefined)
+  const targetHint = unit === 'pct'
+    ? (tp > 0 ? `= ${inr(tp)}` : undefined)
+    : (tp > price ? `${((tp / price - 1) * 100).toFixed(1)}% above price` : undefined)
 
   const warnings = []
   if (buy && q > 0) {
@@ -32,14 +59,27 @@ export default function OrderForm({ stock, cash, totalValue, holding, onSubmit }
     else if ((lossIfStopped / totalValue) * 100 > 2) warnings.push(`This trade risks ${((lossIfStopped / totalValue) * 100).toFixed(1)}% of your portfolio. Many beginners keep risk to 1–2% per trade.`)
     if (exposure > 25) warnings.push(`This stock would be ${exposure.toFixed(0)}% of your portfolio. A large single position reduces diversification.`)
   }
-
+  const changeUnit = (next) => {
+    if (next === unit) return
+    const r = (x) => String(Math.round(x * 100) / 100)
+    const flip = (raw, dir) => {
+      const n = Number(raw)
+      if (!n) return ''
+      return unit === 'pct' ? r(price * (1 + (dir * n) / 100)) : r(dir * (n / price - 1) * 100)
+    }
+    setStop(flip(stop, -1))
+    setTarget(flip(target, 1))
+    setUnit(next)
+  }
+  
   const submit = async (e) => {
     e.preventDefault()
     setError('')
     if (q < 1) return setError('Enter a quantity of at least 1')
-    if (buy && stop && !slValid) return setError('Stop-loss must be below the buy price')
-    if (buy && target && tp <= price) return setError('Take-profit must be above the buy price')
-    setBusy(true)
+    
+    if (buy && stop && !slValid) return setError(unit === 'pct' ? 'Stop-loss % must be above 0 and below 100' : 'Stop-loss must be below the buy price')
+    if (buy && target && tp <= price) return setError(unit === 'pct' ? 'Take-profit % must be above 0' : 'Take-profit must be above the buy price')
+      setBusy(true)
     try {
       await onSubmit({ symbol, name, sector, side, qty: q, price, stopLoss: buy && sl ? sl : null, takeProfit: buy && tp ? tp : null })
       setQty(''); setStop(''); setTarget('')
@@ -68,9 +108,15 @@ export default function OrderForm({ stock, cash, totalValue, holding, onSubmit }
 
       {buy && (
         <>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-muted">Enter stop-loss and take-profit as</span>
+            <UnitToggle unit={unit} onChange={changeUnit} />
+          </div>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Stop-loss" id="sl" type="number" value={stop} onChange={(e) => setStop(e.target.value)} placeholder="Below price" />
-            <Field label="Take-profit" id="tp" type="number" value={target} onChange={(e) => setTarget(e.target.value)} placeholder="Above price" />
+            <Field label={`Stop-loss (${unit === 'pct' ? '%' : '₹'})`} id="sl" type="number" step="any" value={stop}
+              onChange={(e) => setStop(e.target.value)} placeholder={unit === 'pct' ? '% below price' : 'Below price'} hint={stopHint} />
+            <Field label={`Take-profit (${unit === 'pct' ? '%' : '₹'})`} id="tp" type="number" step="any" value={target}
+              onChange={(e) => setTarget(e.target.value)} placeholder={unit === 'pct' ? '% above price' : 'Above price'} hint={targetHint} />
           </div>
 
           <div className="rounded-xl bg-surface-2 p-3 mb-4 text-sm">

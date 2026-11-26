@@ -9,6 +9,7 @@ import OrderForm from '@/components/OrderForm'
 import TradeReview from '@/components/TradeReview'
 import { reviewOrder } from '@/utils/review'
 import SentimentWidget from '@/components/SentimentWidget'
+import RiskAssessment from '@/components/RiskAssessment'
 
 const panel = 'rounded-2xl border border-line bg-surface p-5'
 const day = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
@@ -45,6 +46,7 @@ export default function Trade() {
     const { portfolio: next, trade } = await tradeService.placeOrder({ ...order, review })
     setPortfolio(next)
     setReviewing(trade)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -64,6 +66,8 @@ export default function Trade() {
         </div>
       )} */}
             {reviewing && <TradeReview trade={reviewing} onClose={() => setReviewing(null)} />}
+            {reviewing && <RiskAssessment trade={reviewing} />}
+
 
       <div className="grid lg:grid-cols-3 gap-4 mb-4">
         <div className="lg:col-span-2 space-y-4">

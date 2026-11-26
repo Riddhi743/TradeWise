@@ -12,5 +12,5 @@ yfinance
 feedparser
 transformers
 torch
-scikit-learn
+scikit-learn==1.6.1
 datasets
